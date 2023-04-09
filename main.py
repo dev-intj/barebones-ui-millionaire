@@ -1,118 +1,104 @@
-from tkinter import *
-import pygame
+import tkinter as tk
 from PIL import Image, ImageTk
 
-# setting up tkinter
-pygame.init
-root = Tk()
-# window title
-root.title("Who wants to be a Millionaire")
-# dimensions
-root.geometry('1280x720+0+0')
-# background
-root.configure(background='black')
 
-# setting up screens
+class MillionaireGame(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Who Wants to Be a Millionaire")
+        self.geometry('1280x720')
+        self.configure(background='black')
+        self.main_width = 900
+        self.sidebar_width = self.winfo_width() - self.main_width
+        self.setup_main_screen()
+        self.setup_sidebar_screen()
 
-# helper variables
-bd = 0  # I did 0 cause I would have to account borders in every frame build up
-height = 720
-width = 1280
+    def setup_main_screen(self):
+        self.main_frame = tk.Frame(self, bg="gray")
+        self.main_frame.pack(side="left", fill="both", expand=True)
+        self.setup_main_logo()
+        self.setup_main_questions()
 
-main_width = 900
-sidebar_width = width-main_width
+    def setup_main_logo(self):
+        self.main_logo_frame = tk.Frame(self.main_frame, bg="purple")
+        self.main_logo_frame.pack(fill="both", expand=True)
+        img = Image.open('assets/center.png')
+        img = img.resize((50, 50))
+        self.logo_image = ImageTk.PhotoImage(img)
+        self.logo_button = tk.Button(
+            self.main_logo_frame, image=self.logo_image, bg="black", bd=0)
+        self.logo_button.pack(fill="both", expand=True)
 
-# main screen
-ROOT = Frame(root, bg="gray", bd=bd, width=width, height=height)
-ROOT.grid(row=0, column=0)
+    def setup_main_questions(self):
+        self.main_questions_frame = tk.Frame(self.main_frame, bg="yellow")
+        self.main_questions_frame.pack(fill="both", expand=True)
 
-MAIN = Frame(ROOT, bg="gray", bd=bd, width=main_width, height=height)
-MAIN.grid(row=0, column=0)
+        # TODO: Add questions widgets
 
-MAINLogo = Frame(MAIN, bd=bd, bg="purple",
-                 width=main_width, height=height/4 * 2)
-MAINLogo.grid(row=0, column=0)
+    def setup_sidebar_screen(self):
+        self.sidebar_frame = tk.Frame(self, bg="red")
+        self.sidebar_frame.pack(side="right", fill="both", expand=True)
+        self.setup_sidebar_options()
+        self.setup_sidebar_prizes()
 
-MAINquestions = Frame(MAIN, bg="yellow", bd=bd,
-                      width=main_width, height=height/4 * 2)
-MAINquestions.grid(row=1, column=0)
+    def setup_sidebar_options(self):
+        self.options_frame = tk.Frame(self.sidebar_frame, bg="red")
+        self.options_frame.pack(side="top", fill="both", expand=True)
+        self.setup_5050_button()
+        self.setup_ata_button()
+        self.setup_paf_button()
 
+    def setup_5050_button(self):
+        self.button_5050_frame = tk.Frame(self.options_frame, bg="green")
+        self.button_5050_frame.pack(side="left", fill="both", expand=True)
+        img = Image.open('assets/Classic5050.png')
+        img = img.resize((62, 48))
+        self.button_5050_image = ImageTk.PhotoImage(img)
+        self.button_5050 = tk.Button(
+            self.button_5050_frame, bg="red", image=self.button_5050_image, bd=0)
+        self.button_5050.pack(fill="both", expand=True)
 
-BackgroundImage = PhotoImage(file='assets/center.png')
+    def setup_ata_button(self):
+        self.button_ata_frame = tk.Frame(self.options_frame, bg="yellow")
+        self.button_ata_frame.pack(side="left", fill="both", expand=True)
+        img = Image.open('assets/ClassicATA.png')
+        img = img.resize((62, 48))
+        self.button_ata_image = ImageTk.PhotoImage(img)
+        self.button_ata = tk.Button(self.button_ata_frame, bg="yellow",
+                                    image=self.button_ata_image, bd=0)
+        self.button_ata.pack(fill="both", expand=True)
 
-LogoCenter = Button(MAINLogo, bd=bd, image=BackgroundImage,
-                    bg="black", width=main_width, height=height/4 * 2)
-LogoCenter.grid()
+    def setup_paf_button(self):
+        self.button_paf_frame = tk.Frame(self.options_frame, bg="purple")
+        self.button_paf_frame.pack(side="left", fill="both", expand=True)
+        img = Image.open('assets/ClassicPAF.png')
+        img = img.resize((62, 48))
+        self.button_paf_image = ImageTk.PhotoImage(img)
+        self.button_paf = tk.Button(self.button_paf_frame, bg="purple",
+                                    image=self.button_paf_image, bd=0)
+        self.button_paf.pack(fill="both", expand=True)
 
-# sidebar screen (help options and prizes)
+    def setup_sidebar_prizes(self):
+        self.prizes_frame = tk.Frame(self.sidebar_frame, bg="blue")
+        self.prizes_frame.pack(side="bottom", fill="both", expand=True)
 
-SIDEBAR = Frame(ROOT, bg="red", bd=bd, width=sidebar_width, height=height)
-SIDEBAR.grid(row=0, column=1)
+        self.prize_labels = []
+        prizes = ['$1,000,000', '$500,000', '$250,000', '$100,000', '$50,000',
+                  '$25,000', '$10,000', '$5,000', '$1,000', '$500', '$300',
+                  '$200', '$100', '$50', '$0']
+        for prize in prizes:
+            label = tk.Label(self.prizes_frame, text=prize, bg="blue",
+                             fg="white", font=("Helvetica", 14))
+            label.pack(fill="both", expand=True)
+            self.prize_labels.append(label)
 
-# options ( I don't know why its so complicated. )
-
-options_width = sidebar_width / 4
-
-options_height_full = height/4 * 1
-
-options_height = 50
-
-SIDEBARoptions = Frame(SIDEBAR, bg="red", bd=bd,
-                       width=sidebar_width, height=height/4 * 1)
-SIDEBARoptions.grid(row=0, column=0)
-
-SIDEBARoptions5050 = Frame(SIDEBARoptions, bg="green", bd=bd,
-                           width=options_width, height=options_height_full)
-
-SIDEBARoptionsATA = Frame(SIDEBARoptions, bg="yellow", bd=bd,
-                          width=options_width, height=options_height_full)
-SIDEBARoptionsPAF = Frame(SIDEBARoptions, bg="red", bd=bd,
-                          width=options_width, height=options_height_full)
-
-# there is no way this is so complicated, i must be doing something wrong
-SIDEBARoptions.rowconfigure(0, minsize=height/4 * 1)
-
-SIDEBARoptions5050.grid(row=0, column=1)
-SIDEBARoptionsATA.grid(row=0, column=2)
-SIDEBARoptionsPAF.grid(row=0, column=3)
-
-Classic5050Image = Image.open('assets/Classic5050.png')
-
-ClassicATAImage = Image.open('assets/ClassicATA.png')
-
-ClassicPAFImage = Image.open('assets/ClassicPAF.png')
-
-resize_image5050 = Classic5050Image.resize((62, 48))
-resize_imageATA = ClassicATAImage.resize((62, 48))
-resize_imagePAF = ClassicPAFImage.resize((62, 48))
-
-
-Classic5050I = ImageTk.PhotoImage(resize_image5050)
-
-ClassicATAI = ImageTk.PhotoImage(resize_imageATA)
-
-ClassicPAFI = ImageTk.PhotoImage(resize_imagePAF)
-
-
-Classic5050 = Button(SIDEBARoptions5050, bd=bd, bg="red",
-                     image=Classic5050I, width=options_width, height=options_height)
-
-ClassicATA = Button(SIDEBARoptionsATA, bd=bd, bg="red",
-                    image=ClassicATAI, width=options_width, height=options_height)
-
-ClassicPAF = Button(SIDEBARoptionsPAF, bd=bd, bg="red",
-                    image=ClassicPAFI, width=options_width, height=options_height)
-
-Classic5050.grid()
-ClassicATA.grid()
-ClassicPAF.grid()
+    def start(self):
+        """
+        Start the game.
+        """
+        self.mainloop()
 
 
-# prizes
-SIDEBARprizes = Frame(SIDEBAR, bg="blue", bd=bd,
-                      width=sidebar_width, height=height/4 * 3)
-SIDEBARprizes.grid(row=1, column=0)
-
-
-# run graphical interface on loop
-root.mainloop()
+if __name__ == '__main__':
+    app = MillionaireGame()
+    app.start()
